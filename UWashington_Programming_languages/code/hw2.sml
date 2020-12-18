@@ -19,6 +19,11 @@ fun all_except_option(x:string, y: string list) =
                         end
             in except_helper (y,[])
             end
+fun get_substitutions1 ([x1,x2::_], y) = 
+   case all_except_option(y,x1) of 
+   NONE => []
+   | SOME res_x => res_x @ get_substitutions1 (x2, y)
+   
 
 (*
 (* put your solutions for problem 1 here *)
