@@ -5,25 +5,18 @@
    polymorphic types that may be confusing *)
 fun same_string(s1 : string, s2 : string) =
     s1 = s2
+ 
+fun get_substitutions1 (search_str, search_list) =
+   case search_list of 
+   [] => NONE
+   | hdlist::tllist => case (same_string (search_str, hdlist), tllist) of 
+                        (true, []) => SOME []
+                        | (false, []) => NONE
+                        | (true,_) => SOME tllist
+                        | (false,_) => case (get_substitutions1(search_str, tllist)) of 
+                                       NONE => SOME []
+                                       | SOME t =>
 
-fun all_except_option(x:string, y: string list) = 
-    case y of 
-    [] => NONE
-    | _ => let fun except_helper (y1, z) = 
-                        let val hd_y = hd y1
-                        val tl_y = tl y1
-                        in 
-                        if same_string (x, hd_y) 
-                        then SOME (z @ tl_y) 
-                        else except_helper (tl_y, z @ [hd])
-                        end
-            in except_helper (y,[])
-            end
-fun get_substitutions1 ([x1,x2::_], y) = 
-   case all_except_option(y,x1) of 
-   NONE => []
-   | SOME res_x => res_x @ get_substitutions1 (x2, y)
-   
 
 (*
 (* put your solutions for problem 1 here *)

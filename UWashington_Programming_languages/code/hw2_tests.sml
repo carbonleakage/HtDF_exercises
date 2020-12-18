@@ -6,17 +6,24 @@
 val test1 = all_except_option ("string", ["string"]) = SOME []
 val test12 = all_except_option ("hi", ["hi", "there", "this", "is", "cool", "hey"]) = SOME ["there", "this", "is", "cool", "hey"]
 val test13 = all_except_option ("hey", ["hi", "there", "this", "is", "cool", "hey"]) = SOME ["hi","there", "this", "is", "cool"]
+val test14 = all_except_option ("string", ["strung"]) = NONE
+val test15 = all_except_option ("hoppala", ["hi", "there", "this", "is", "cool", "hey"]) = NONE
 
-val test2 = get_substitutions1 ([["foo"],["there"]], "foo") = []
 
+val test21 = get_substitutions1 ([["foo"],["there"]], "foo") = []
+val test22 = get_substitutions1([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]],"Fred") =  ["Fredrick","Freddie","F"]
+val test23 = get_substitutions1([["Fred","Fredrick"],["Jeff","Jeffrey"],["Geoff","Jeff","Jeffrey"]],"Jeff") = ["Jeffrey","Geoff","Jeffrey"]
 
-(*
-val test3 = get_substitutions2 ([["foo"],["there"]], "foo") = []
+val test31 = get_substitutions2 ([["foo"],["there"]], "foo") = []
+val test32 = get_substitutions2([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]],"Fred") =  ["Fredrick","Freddie","F"]
+val test33 = get_substitutions2([["Fred","Fredrick"],["Jeff","Jeffrey"],["Geoff","Jeff","Jeffrey"]],"Jeff") = ["Jeffrey","Geoff","Jeffrey"]
+
 
 val test4 = similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"}) =
 	    [{first="Fred", last="Smith", middle="W"}, {first="Fredrick", last="Smith", middle="W"},
 	     {first="Freddie", last="Smith", middle="W"}, {first="F", last="Smith", middle="W"}]
 
+(*
 val test5 = card_color (Clubs, Num 2) = Black
 
 val test6 = card_value (Clubs, Num 2) = 2
