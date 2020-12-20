@@ -60,8 +60,20 @@ val test10 = check_pat (Variable("x")) = true
 val test10_1 = check_pat (TupleP [Variable("x"),  Variable("xx"),  Variable("xy"),  Variable("abcd")]) = true
 val test10_2 = check_pat (TupleP [Variable("x"),  Variable("x"),  Variable("x"),  Variable("x")]) = false
 
-(*)
+val test10_3 = check_pat (TupleP[TupleP[Variable "x",ConstructorP ("wild",Wildcard)],Variable "x"]) = true
+val test10_4 = check_pat (TupleP[Variable "x",ConstructorP ("wild",Wildcard)]) = false
+val test10_5 = check_pat (TupleP[TupleP[Variable "x",ConstructorP ("wild",Wildcard)],Wildcard]) = true
+val test10_6 = check_pat (TupleP[TupleP[TupleP[Variable "x",ConstructorP ("wild",Wildcard)],Wildcard],Variable "x"]) = false
+val test10_7 = check_pat (TupleP[ConstP 17,Wildcard,ConstP 4,ConstructorP ("egg",ConstP 4),ConstructorP ("egg",ConstructorP ("egg",ConstP 4))]) = true
+val test10_8 = check_pat (TupleP[Wildcard,Wildcard]) = true
+val test10_9 = check_pat (TupleP[ConstP 4,Wildcard,Variable "ba",TupleP[Variable "ab"]]) = true
+val test10_10 = check_pat (TupleP[ConstructorP ("egg",ConstP 4),ConstructorP ("egg",ConstP 4)]) = true
+val test10_11 = check_pat (TupleP[ConstP 17,Wildcard,ConstP 4,ConstructorP ("egg",ConstP 4),ConstructorP ("egg",ConstructorP ("egg",ConstP 4)),TupleP[ConstP 17,Wildcard,ConstP 4,ConstructorP ("egg",ConstP 4),ConstructorP ("egg",ConstructorP ("egg",ConstP 4))],TupleP[Wildcard,Wildcard],TupleP[ConstP 17,ConstP 4],TupleP[ConstructorP ("egg",ConstP 4),ConstructorP ("egg",ConstP 4)]]) = true
+val test10_12 = check_pat (ConstructorP ("hi",TupleP[Variable "x",Variable "x"])) = false
+val test10_13 = check_pat (ConstructorP ("hi",TupleP[Variable "x",ConstructorP ("yo",TupleP[Variable "x",UnitP])])) = false
+
+
 val test11 = match (Const(1), UnitP) = NONE
 
+
 val test12 = first_match Unit [UnitP] = SOME []
-*)

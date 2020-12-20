@@ -74,8 +74,9 @@ fun check_pat p =
     let fun variable_names p acc = 
         case p of 
         Variable x1 => [x1]
-        | TupleP ps => foldl (fn (Variable s1,acc1) => s1::acc1) acc ps
-        | ConstructorP (_,p1) =>  
+        | TupleP ps => foldl (fn (s1,acc1) => (variable_names s1 [])@acc1) acc ps
+        | ConstructorP (_,p1) => (variable_names p1 acc)
+        | _ => []
     in
         let fun check_duplicates lst =
             case lst of 
@@ -86,20 +87,45 @@ fun check_pat p =
         end
     end
 
-(*
+
 fun match (v, p) =
     case (v,p) of 
-    (_, Wildcard) => []
-    | (v1, Variable s1) => [s1, v1]
-    | (Unit, UnitP) => []
-    | (Const v1, ConstP p1) => []
-    | (Tuple vshead::vstail, TupleP pshead::pstail) => if List.size (vstail) = List.size (pstail) 
-                                                        then [match (vshead, pshead)] @ match (vstail, pstail)
-                                                        else []
-    | (Constructor (s2,v), ConstructorP(s1,p)) => 
+    (_, Wildcard) => SOME []
+    | (v1, Variable s1) => SOME [(s1, v1)]
+    | (Unit, UnitP) => SOME []
+    | (Const v1, ConstP p1) => SOME []
+    | (Tuple vs, TupleP ps) => if List.length vs = List.length ps 
+                                then all_answers match (ListPair.zip (vs, ps)) 
+                                else SOME []
+    | (Constructor (s2,v), ConstructorP(s1,p)) => if s1 = s2 then match (v, p) else SOME []
+    | (_,_) => NONE
+
+(*
+fun first_match v p = 
+    let fun match_curried v p = match (v,p)
+    fun first_answer_helper = (first_answer) handle NoAnswer => NONE
+    in
+    (first_answer_helper (match_curried v) p) 
+    end
+
+handle NoAnswer => NONE
+fun option_check (input_option) = 
+    case input_option of 
+    NONE => raise NoAnswer
+    | SOME i => SOME [i]
+
+val b = List.map option_check [NONE, SOME 1, SOME 2, NONE] handle NoAnswer => SOME 999
 
 
 
+fun first_match v p = 
+    let fun match_curried v p = match(v,p) 
+    val fa_partial = first_answer (match_curried v)
+    in
+    case fa_partial p of 
+    exception NoAnswer => NONE
+    | SOME i => SOME i
+    end
 (**** for the challenge problem only ****)
 
 datatype typ = Anything
